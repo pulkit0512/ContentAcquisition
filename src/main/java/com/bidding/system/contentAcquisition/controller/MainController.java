@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class MainController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
     private static final String TOKEN_NOT_VALID = "Token Not Valid";
-    private static final String INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
     private AuctionListingService auctionListingService;
     private AuthenticationService authenticationService;
+
+    @GetMapping("/")
+    public String hello() {
+        return "Service for acquiring content for auction items.";
+    }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
@@ -27,8 +31,8 @@ public class MainController {
             String jwtToken = authenticationService.login(modifiedUserName, password);
             return new ResponseEntity<>(jwtToken, HttpStatus.OK);
         } catch (Exception ex) {
-            LOGGER.warn(INVALID_CREDENTIALS);
-            return new ResponseEntity<>(INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
+            LOGGER.error(ex.getMessage());
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 

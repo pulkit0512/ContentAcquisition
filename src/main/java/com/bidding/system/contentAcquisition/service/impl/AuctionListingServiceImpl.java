@@ -45,10 +45,11 @@ public class AuctionListingServiceImpl implements AuctionListingService {
             }
 
             pubSubHelper.publishMessage(auctionData);
+            LOGGER.info("Auction enlisted");
         } catch (UnknownCurrencyException ex) {
             throw new InvalidRequestException("Unknown currency");
         } catch (DateTimeParseException ex) {
-            throw new InvalidRequestException("Date parse Exception, please check expiration time for auction");
+            throw new InvalidRequestException("Date parse Exception, please check expiration time for auction valid format is YYYY-MM-DDThh:mm:ss.sss");
         }
     }
 

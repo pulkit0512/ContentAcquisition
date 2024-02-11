@@ -29,16 +29,7 @@ public class AuctionListingServiceImpl implements AuctionListingService {
     @Override
     public void enlistAuction(AuctionData auctionData) throws IOException, InvalidRequestException {
         try {
-            if (auctionData.getBasePrice() < 0) {
-                throw new InvalidRequestException("Base Price can't be less then 0");
-            }
-            if (StringUtils.isEmpty(auctionData.getCurrencyCode())) {
-                throw new InvalidRequestException("Currency Code is mandatory.");
-            }
-            if (StringUtils.isEmpty(auctionData.getItemCategory())) {
-                throw new InvalidRequestException("Item Category is mandatory");
-            }
-
+            validateRequest(auctionData);
             updateAuctionData(auctionData);
             if (auctionData.getExpirationInSeconds() < Instant.now().getEpochSecond()) {
                 throw new InvalidRequestException("Auction Expiration can't be in Past");
@@ -50,6 +41,18 @@ public class AuctionListingServiceImpl implements AuctionListingService {
             throw new InvalidRequestException("Unknown currency");
         } catch (DateTimeParseException ex) {
             throw new InvalidRequestException("Date parse Exception, please check expiration time for auction valid format is YYYY-MM-DDThh:mm:ss.sss");
+        }
+    }
+
+    private void validateRequest(AuctionData auctionData) throws InvalidRequestException {
+        if (auctionData.getBasePrice() < 0) {
+            throw new InvalidRequestException("Base Price can't be less then 0");
+        }
+        if (StringUtils.isEmpty(auctionData.getCurrencyCode())) {
+            throw new InvalidRequestException("Currency Code is mandatory.");
+        }
+        if (StringUtils.isEmpty(auctionData.getItemCategory())) {
+            throw new InvalidRequestException("Item Category is mandatory");
         }
     }
 
